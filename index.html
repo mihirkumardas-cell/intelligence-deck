@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>LuminaCode — AI Intelligence Studio</title>
+    <meta content="LuminaCode — Ultra-premium Obsidian &amp; Rose Gold AI studio for elite developers." name="description">
+    
+    <!-- Google Fonts: Outfit + JetBrains Mono -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+    
+    <!-- Prism.js syntax highlighting -->
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "border-subtle": "rgba(255, 179, 153, 0.15)",
+                    "tertiary-fixed": "#eae0de",
+                    "on-primary": "#512311",
+                    "on-primary-fixed": "#360e02",
+                    "surface-container-high": "#2a2a2c",
+                    "primary": "#ffb399", 
+                    "text-dim": "#8e8e93",
+                    "surface-bright": "#39393b",
+                    "on-tertiary-fixed": "#1f1b19",
+                    "on-surface": "#e5e1e4",
+                    "inverse-primary": "#894f3a",
+                    "secondary-fixed-dim": "#dac2b6",
+                    "on-tertiary": "#342f2e",
+                    "tertiary-container": "#ccc3c0",
+                    "surface-container": "#201f21",
+                    "on-error": "#690005",
+                    "secondary-container": "#57453d",
+                    "surface-dim": "#131315",
+                    "primary-fixed": "#ffdbcf",
+                    "primary-container": "#ffb399",
+                    "surface-tint": "#ffb59c",
+                    "error-container": "#93000a",
+                    "surface-card": "#121215",
+                    "tertiary-fixed-dim": "#cdc5c2",
+                    "surface-container-low": "#1c1b1d",
+                    "on-secondary": "#3c2d25",
+                    "accent-glow": "rgba(255, 179, 153, 0.08)",
+                    "on-secondary-fixed-variant": "#54433b",
+                    "error": "#ffb4ab",
+                    "on-primary-fixed-variant": "#6d3825",
+                    "secondary-fixed": "#f7ddd1",
+                    "on-secondary-fixed": "#261912",
+                    "surface-variant": "#353437",
+                    "on-secondary-container": "#cbb4a8",
+                    "inverse-surface": "#e5e1e4",
+                    "on-tertiary-container": "#56504e",
+                    "outline-variant": "#52433f",
+                    "secondary": "#dac2b6",
+                    "inverse-on-surface": "#313032",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-lowest": "#0e0e10",
+                    "tertiary": "#e8dfdc",
+                    "background": "#0a0a0c",
+                    "on-primary-container": "#7a432f",
+                    "on-background": "#e5e1e4",
+                    "surface": "#131315",
+                    "on-tertiary-fixed-variant": "#4b4644",
+                    "primary-fixed-dim": "#ffb59c",
+                    "surface-container-highest": "#353437",
+                    "outline": "#a08d87",
+                    "on-surface-variant": "#d7c2bb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "1rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "display": ["Outfit", "sans-serif"],
+                    "code": ["JetBrains Mono", "monospace"]
+            }
+          },
+        },
+      }
+    </script>
+    
+    <!-- Custom stylesheet override -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-background text-on-surface font-display antialiased">
+<div class="flex min-h-screen">
+    <!-- Sidebar Navigation -->
+    <aside aria-label="Sidebar" class="sidebar glass-panel h-screen fixed left-0 top-0 z-50 flex flex-col">
+        <div class="p-8 pb-10">
+            <div class="flex items-center gap-4 relative">
+                <div class="relative w-10 h-10 flex items-center justify-center">
+                    <div class="logo-aura"></div>
+                    <div class="relative z-10 w-full h-full bg-primary rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-on-primary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <span class="block text-xl font-bold tracking-tighter text-white">LuminaCode</span>
+                    <span class="label-caps opacity-60 text-[9px]">Intelligence Studio</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="px-6 mb-8">
+            <button class="btn-shimmer w-full py-4 rounded-lg bg-primary text-on-primary font-bold flex items-center justify-center gap-3" id="btn-new-chat" type="button" aria-label="Start new session">
+                <svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-width="2.5" viewBox="0 0 24 24" width="18">
+                    <line x1="12" x2="12" y1="5" y2="19"></line>
+                    <line x1="5" x2="19" y1="12" y2="12"></line>
+                </svg>
+                New Session
+            </button>
+        </div>
+        
+        <nav class="flex-1 px-4 space-y-2 overflow-y-auto">
+            <div class="px-4 py-2 label-caps text-[9px] opacity-40">Console</div>
+            <a class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-primary bg-primary/10 border border-primary/10" href="#section-hero" data-nav="hero">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                <span class="font-medium">Command Deck</span>
+            </a>
+            <a class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors text-white/80" href="#section-cockpit" data-nav="cockpit">
+                <svg class="w-5 h-5 opacity-60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                <span class="opacity-80">Coding Cockpit</span>
+            </a>
+            <a class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors text-white/80" href="#section-capabilities" data-nav="capabilities">
+                <svg class="w-5 h-5 opacity-60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect height="14" rx="2" ry="2" width="20" x="2" y="3"></rect><line x1="8" x2="16" y1="21" y2="21"></line></svg>
+                <span class="opacity-80">Core Spectrum</span>
+            </a>
+            
+            <div class="px-4 py-6 label-caps text-[9px] opacity-40">Engine</div>
+            <a class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors text-white/80" href="#section-tech" data-nav="tech">
+                <svg class="w-5 h-5 opacity-60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon></svg>
+                <span class="opacity-80">Pulse Engine</span>
+            </a>
+            <a class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors text-white/80" href="#section-terminal" data-nav="terminal">
+                <svg class="w-5 h-5 opacity-60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" x2="20" y1="19" y2="19"></line></svg>
+                <span class="opacity-80">Sandbox</span>
+            </a>
+        </nav>
+        
+        <!-- History Sessions List inside Sidebar -->
+        <div class="px-6 py-4 border-t border-glass-border">
+            <h3 class="label-caps text-[9px] opacity-40 mb-3">History Sessions</h3>
+            <ul class="history-list space-y-2 max-h-[160px] overflow-y-auto" id="history-list" role="list">
+                <!-- JS populates -->
+            </ul>
+        </div>
+        
+        <!-- Sidebar Footer Status and Clear History -->
+        <div class="p-6 border-t border-glass-border bg-black/20 flex flex-col gap-4">
+            <button class="btn-clear-history w-full py-2.5 rounded bg-white/5 border border-white/10 hover:border-red-400/40 hover:text-red-400 hover:bg-red-400/5 transition-colors text-xs font-bold flex items-center justify-center gap-2" id="btn-clear-history" type="button" aria-label="Clear all history">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                Clear History
+            </button>
+            <div class="flex items-center gap-3 text-[10px] label-caps server-status online" id="server-status">
+                Connecting...
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Main Workspace -->
+    <main class="main-workspace flex-1">
+        <!-- App Header -->
+        <header class="flex justify-between items-center mb-16">
+            <div>
+                <h2 class="text-3xl font-bold tracking-tight text-white mb-1">Workspace Alpha</h2>
+                <p class="opacity-50 font-light">Refined intelligence running in Obsidian &amp; Rose Gold.</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="glass-panel px-5 py-2 rounded-full text-[10px] font-bold label-caps border-primary/20 text-primary">Pulse Engine Active</div>
+                <div class="glass-panel px-5 py-2 rounded-full text-[10px] font-bold label-caps opacity-60">200ms Latency</div>
+            </div>
+        </header>
+        
+        <!-- SECTION 0: Hero Deck -->
+        <section class="mb-32" id="section-hero">
+            <div class="glass-panel rounded-3xl p-16 flex items-center gap-16 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none bg-gradient-to-l from-primary to-transparent"></div>
+                <div class="flex-1 relative z-10">
+                    <span class="label-caps mb-6 block">LuminaCode Premier</span>
+                    <h1 class="text-7xl font-black mb-8 leading-[0.9] tracking-tighter text-white" style="text-shadow: rgba(255, 179, 153, 0.3) 0px 0px 20px, rgba(255, 179, 153, 0.15) 0px 0px 40px; letter-spacing: -0.04em;">Code with Clarity.<br><span class="text-primary">Glow with Flow.</span></h1>
+                    <p class="text-xl opacity-60 max-w-lg mb-12 font-light leading-relaxed">A prestigious, atmospheric workspace that transforms logic blocks into highly optimized developer solutions.</p>
+                    <div class="flex gap-6">
+                        <button class="btn-shimmer bg-primary text-on-primary px-10 py-5 rounded-xl font-bold flex items-center gap-3 text-lg" id="hero-focus-editor">
+                            Start Coding
+                            <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20"><line x1="5" x2="19" y1="12" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </button>
+                        <button class="glass-panel border-white/10 px-10 py-5 rounded-xl font-medium hover:bg-white/5" id="hero-scroll-output">View Deck</button>
+                    </div>
+                </div>
+                <div class="w-1/3 flex justify-center items-center">
+                    <div class="hero-visual-floating relative w-64 h-64">
+                        <div class="absolute inset-0 bg-primary/20 blur-[80px] rounded-full"></div>
+                        <div class="relative z-10 w-full h-full flex items-center justify-center scale-150">
+                            <svg class="w-32 h-32 text-primary drop-shadow-[0_0_15px_rgba(255,179,153,0.5)]" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SECTION 1: Coding Cockpit -->
+        <section class="mb-32" id="section-cockpit">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <span class="label-caps mb-4 block">Active Panel</span>
+                    <h3 class="text-4xl font-bold text-white">Interactive Console</h3>
+                </div>
+                
+                <!-- Mode Selector (Lowercase data-mode for Flask Backend Compatibility) -->
+                <div class="flex glass-panel p-1 rounded-xl border-white/5 mode-selector relative">
+                    <div class="mode-pill absolute top-1 bottom-1 bg-primary/20 border border-primary/30 rounded-lg transition-all duration-300" style="z-index: 0;"></div>
+                    <button class="mode-btn px-6 py-2 rounded-lg active transition-all font-medium text-sm z-10" data-mode="generate">Generate</button>
+                    <button class="mode-btn px-6 py-2 rounded-lg opacity-50 hover:opacity-80 transition-all text-sm z-10" data-mode="explain">Explain</button>
+                    <button class="mode-btn px-6 py-2 rounded-lg opacity-50 hover:opacity-80 transition-all text-sm z-10" data-mode="debug">Debug</button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-10">
+                <!-- Left Panel: Input Form -->
+                <form id="code-form" action="/" method="POST" class="glass-panel rounded-2xl flex flex-col min-h-[500px]">
+                    <input type="hidden" name="mode" id="hidden-mode" value="generate">
+                    
+                    <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                        <div class="flex items-center gap-3 opacity-60 text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                            Task Specification (<span id="active-mode-label" class="capitalize">generate</span>)
+                        </div>
+                        <div class="text-[10px] font-mono opacity-30">UTF-8 // Llama-3</div>
+                    </div>
+                    
+                    <div class="flex-1 p-8 font-code text-sm flex gap-4">
+                        <div class="line-numbers opacity-30 select-none text-right font-mono flex flex-col gap-0.5" aria-hidden="true" style="width: 28px; border-right: 1px solid rgba(255,179,153,0.1); padding-right: 8px;">
+                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div>
+                        </div>
+                        <textarea name="prompt" class="w-full bg-transparent border-none focus:ring-0 text-white/90 placeholder-white/20 resize-none h-full focus:outline-none" id="editor-textarea" placeholder="Describe the code logic to generate..." required spellcheck="false" autocomplete="off"></textarea>
+                    </div>
+                    
+                    <div class="p-6 border-t border-white/5 flex justify-between items-center bg-black/20">
+                        <div class="text-xs opacity-40 font-mono" id="char-count">0 chars</div>
+                        <button type="submit" id="btn-submit" class="btn-shimmer px-8 py-3 bg-primary text-on-primary rounded-lg font-bold flex items-center gap-2">
+                            <span class="spinner hidden" aria-hidden="true"></span>
+                            <span class="btn-text">Run Assistant</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Right Panel: Output & Responses -->
+                <div class="glass-panel rounded-2xl flex flex-col bg-black/40">
+                    <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                        <div class="flex items-center gap-3 text-primary text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                            Pulse Response
+                        </div>
+                        
+                        <!-- Actions bar -->
+                        <div class="flex items-center gap-2" id="output-actions">
+                            <button type="button" class="hidden px-3 py-1.5 rounded bg-white/5 border border-white/10 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-colors text-xs font-semibold flex items-center gap-1.5" id="btn-toggle-view" aria-label="Toggle raw/rendered view">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M16 18l6-6-6-6M8 6l-6 6 6 6"></path>
+                                </svg>
+                                Show Raw
+                            </button>
+                            <button type="button" class="hidden px-3 py-1.5 rounded bg-white/5 border border-white/10 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-colors text-xs font-semibold flex items-center gap-1.5" id="btn-copy" aria-label="Copy response to clipboard">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                                Copy
+                            </button>
+                            <button type="button" class="hidden px-3 py-1.5 rounded bg-white/5 border border-white/10 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-colors text-xs font-semibold flex items-center gap-1.5" id="btn-download" aria-label="Download response as file">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 p-8 overflow-y-auto" id="output-container">
+                        <!-- Welcome / Awaiting Input State -->
+                        <div class="flex flex-col items-center justify-center text-center opacity-40 h-full py-12" id="empty-state">
+                            <div class="w-20 h-20 mb-6 bg-white/5 rounded-full flex items-center justify-center border border-white/5">
+                                <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 5v14l-8-8 8-8"></path><polyline points="12 5 20 12 12 19"></polyline></svg>
+                            </div>
+                            <h4 class="text-lg font-medium mb-2">Awaiting Input</h4>
+                            <p class="text-sm font-light max-w-xs" id="mode-hint">Compose your prompt to generate glowing peachy output.</p>
+                        </div>
+                        
+                        <!-- Skeleton Loader -->
+                        <div class="skeleton-loader" id="skeleton-loader">
+                            <div class="skeleton-line h1 mb-4"></div>
+                            <div class="skeleton-line p1 mb-2"></div>
+                            <div class="skeleton-line p2 mb-2"></div>
+                            <div class="skeleton-line p3 mb-2"></div>
+                            <div class="skeleton-line code mt-4"></div>
+                        </div>
+                        
+                        <!-- Markdown Output -->
+                        <div id="markdown-output" class="markdown-body hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SECTION 2: Core Spectrum -->
+        <section class="mb-32" id="section-capabilities">
+            <span class="label-caps mb-4 block">Operational Spectrum</span>
+            <h3 class="text-4xl font-bold text-white mb-12">Neural Nodes</h3>
+            <div class="grid grid-cols-3 gap-8">
+                <div class="quick-card glass-panel rounded-2xl p-8 hover:bg-white/[0.02]" data-quick-mode="generate">
+                    <div class="text-primary font-mono text-[10px] mb-8 label-caps">NODE_01</div>
+                    <h4 class="text-xl font-bold mb-4 text-white">Code Generation</h4>
+                    <p class="opacity-50 text-sm font-light leading-relaxed">Generate backend endpoints, API servers, and UI frameworks with mathematical precision.</p>
+                </div>
+                <div class="quick-card glass-panel rounded-2xl p-8 hover:bg-white/[0.02]" data-quick-mode="explain">
+                    <div class="text-primary font-mono text-[10px] mb-8 label-caps">NODE_02</div>
+                    <h4 class="text-xl font-bold mb-4 text-white">Logic Analysis</h4>
+                    <p class="opacity-50 text-sm font-light leading-relaxed">Deconstruct complex algorithms or legacy spaghetti into straightforward, elegant workflows.</p>
+                </div>
+                <div class="quick-card glass-panel rounded-2xl p-8 hover:bg-white/[0.02]" data-quick-mode="debug">
+                    <div class="text-primary font-mono text-[10px] mb-8 label-caps">NODE_03</div>
+                    <h4 class="text-xl font-bold mb-4 text-white">Error Solver</h4>
+                    <p class="opacity-50 text-sm font-light leading-relaxed">Feed logs and compiler errors to build robust, bug-free correction scripts in real-time.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SECTION 3: Sandbox Terminal -->
+        <section class="mb-32" id="section-terminal">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <span class="label-caps mb-2 block">Environment</span>
+                    <h3 class="text-3xl font-bold text-white">Sandbox Emulator</h3>
+                </div>
+                <div class="flex items-center gap-4 text-xs font-mono opacity-40">
+                    <span class="">LOC: California, US</span>
+                    <span class="">UPTIME: 99.98%</span>
+                </div>
+            </div>
+            
+            <div class="glass-panel rounded-xl overflow-hidden border-white/5">
+                <div class="bg-white/5 px-6 py-3 flex items-center justify-between border-b border-white/5">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
+                        <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+                        <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+                    </div>
+                    <div class="text-[11px] font-mono opacity-40 uppercase tracking-widest">zsh — lumina-core-v4</div>
+                    <div class="w-12"></div>
+                </div>
+                <div class="p-8 font-code text-sm leading-relaxed min-h-[300px] bg-black/40" id="terminal-body">
+                    <div class="flex gap-4 mb-4">
+                        <span class="text-primary">➜</span>
+                        <span class="text-on-surface/80">systemctl status luminacode.service</span>
+                    </div>
+                    <div class="text-green-400/80 mb-4 ml-8">
+                        ● luminacode.service - Lumina Intelligence Core<br>
+                        &nbsp;&nbsp;Loaded: loaded (/etc/systemd/system/luminacode.service; enabled)<br>
+                        &nbsp;&nbsp;Active: <span class="font-bold">active (running)</span> since Thu 2026-05-14; 4h 22min ago<br>
+                        &nbsp;&nbsp;Main PID: 8492 (python3)
+                    </div>
+                    <div class="flex gap-4 mb-4">
+                        <span class="text-primary">➜</span>
+                        <span class="text-on-surface/80">lumina-cli --version</span>
+                    </div>
+                    <div class="text-on-surface/40 mb-4 ml-8">
+                        LuminaCode CLI v4.2.0-stable (Rose Gold Edition)
+                    </div>
+                    <div class="flex gap-4">
+                        <span class="text-primary">➜</span>
+                        <div class="w-2 h-5 bg-primary/60 animate-pulse"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SECTION 4: Tech Stack -->
+        <section class="mb-32" id="section-tech">
+            <div class="glass-panel rounded-3xl p-20 text-center relative overflow-hidden bg-gradient-to-b from-black/20 to-transparent">
+                <div class="absolute -top-24 -left-24 w-64 h-64 bg-primary/10 blur-[100px] rounded-full"></div>
+                <span class="label-caps mb-6 block">Engine Specs</span>
+                <h3 class="text-5xl font-black text-white mb-8 tracking-tighter">Powered by Modern Intelligence</h3>
+                <p class="opacity-40 max-w-2xl mx-auto text-lg font-light mb-16 leading-relaxed">The architecture behind LuminaCode is designed for maximum throughput, ultra-low latencies, and high context fidelity.</p>
+                <div class="grid grid-cols-4 gap-12 text-left">
+                    <div class="flex flex-col gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-2xl border border-white/5">⚡</div>
+                        <div class="font-bold text-white">Flask API</div>
+                        <div class="text-sm opacity-40 font-light">Micro-framework routing server for elite performance.</div>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-2xl border border-white/5">Chain</div>
+                        <div class="font-bold text-white">LangChain</div>
+                        <div class="text-sm opacity-40 font-light">Advanced orchestration of neural context windows.</div>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-2xl border border-white/5">🚀</div>
+                        <div class="font-bold text-white">Groq Cloud</div>
+                        <div class="text-sm opacity-40 font-light">Ultra-fast Llama inference at 450 tokens/sec.</div>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-2xl border border-white/5">💎</div>
+                        <div class="font-bold text-white">Lumina Core</div>
+                        <div class="text-sm opacity-40 font-light">Refined Obsidian interface for long-form focus.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SECTION 5: Lab Credits -->
+        <section class="mb-32" id="section-credits">
+            <span class="label-caps mb-8 block text-center">Development Lead</span>
+            <div class="max-w-3xl mx-auto glass-panel rounded-3xl p-10 flex items-center gap-10">
+                <div class="w-32 h-32 rounded-2xl bg-gradient-to-br from-primary to-primary/40 flex items-center justify-center text-on-primary text-4xl font-black shrink-0 border border-white/10 shadow-2xl">
+                    MD
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center gap-4 mb-2">
+                        <h4 class="text-3xl font-bold text-white">Mihir Das</h4>
+                        <div class="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold label-caps text-primary">STAFF</div>
+                    </div>
+                    <p class="text-primary/80 font-medium mb-4">Senior AI Frontend Architect &amp; Lead Systems Engineer</p>
+                    <p class="opacity-40 text-sm font-light mb-6 leading-relaxed">Pioneering high-fidelity developer interfaces and neural orchestration frameworks at the intersection of aesthetics and machine intelligence.</p>
+                    <div class="flex gap-4">
+                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-[10px] font-mono opacity-60">React/Next.js</div>
+                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-[10px] font-mono opacity-60">LLM Ops</div>
+                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-[10px] font-mono opacity-60">Three.js</div>
+                    </div>
+                </div>
+                <div class="hidden lg:block opacity-20 rotate-[-10deg]">
+                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M4 17.5a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm0-4a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm0-4a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm0-4a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Z"></path>
+                    </svg>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="pt-20 pb-10 border-t border-white/5 flex justify-between items-center opacity-40 text-[10px] label-caps app-footer">
+            <div class="flex items-center gap-2">
+                <span class="">© 2026 LUMINACODE</span>
+                <span class="mx-2 opacity-20">|</span>
+                <span class="">Built with ❤️ by <span class="text-primary opacity-100 font-bold">Mihir Das</span></span>
+            </div>
+            <div class="flex gap-8">
+                <span class="hover:text-primary cursor-pointer transition-colors">PRIVACY</span>
+                <span class="hover:text-primary cursor-pointer transition-colors">TERMS</span>
+                <span class="">SYSTEM_V4.2.0</span>
+            </div>
+        </footer>
+    </main>
+</div>
+
+<!-- Hidden element: Flask-rendered initial response -->
+<textarea id="raw-response" style="display:none;">{% if response %}{{ response }}{% endif %}</textarea>
+
+<!-- Marked.js (Markdown parser) -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<!-- Prism.js (Syntax highlighting) -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<!-- App scripts -->
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
