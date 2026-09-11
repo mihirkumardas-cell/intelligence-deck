@@ -528,6 +528,9 @@ code[class*="language-"], pre[class*="language-"] {
     max-height: calc(100vh - 120px);
     display: flex;
     flex-direction: column;
+    border-radius: 1rem;
+    /* Use clip instead of overflow-hidden so inner scroll still works */
+    clip-path: inset(0 round 1rem);
 }
 
 #output-container {

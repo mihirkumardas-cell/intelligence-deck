@@ -90,7 +90,7 @@
     </script>
     
     <!-- Custom stylesheet override -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4.2.1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4.2.2">
 </head>
 <body class="bg-background text-on-surface font-display antialiased">
 <div class="flex min-h-screen">
@@ -317,7 +317,7 @@
                 </div>
                 
                 <!-- Right Panel: Output & Responses (Stable, Non-Jumping Container) -->
-                <div class="glass-panel rounded-2xl flex flex-col bg-black/40 cockpit-output-panel sticky top-6 overflow-hidden" id="cockpit-output-wrapper">
+                <div class="glass-panel rounded-2xl flex flex-col bg-black/40 cockpit-output-panel sticky top-6" id="cockpit-output-wrapper">
                     <div class="p-6 border-b border-white/5 flex justify-between items-center shrink-0">
                         <div class="flex items-center gap-3 text-primary text-sm font-semibold">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -495,10 +495,11 @@
                     <p class="text-primary font-medium mb-4 text-base">Founder &amp; Emerging AI Engineer</p>
                     <p class="opacity-60 text-sm font-light mb-6 leading-relaxed">Passionate fresher engineer &amp; founder crafting next-generation developer tooling, neural code architectures, and high-fidelity intelligent interfaces at the intersection of aesthetics and machine intelligence.</p>
                     <div class="flex flex-wrap gap-3">
+                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono opacity-80 hover:text-primary transition-colors">GenAI &amp; LLM Ops</div>
+                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono opacity-80 hover:text-primary transition-colors">Groq / Llama-3</div>
                         <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono opacity-80 hover:text-primary transition-colors">Python / Flask</div>
-                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono opacity-80 hover:text-primary transition-colors">Groq &amp; LLM Ops</div>
-                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono opacity-80 hover:text-primary transition-colors">Full-Stack AI</div>
-                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono opacity-80 hover:text-primary transition-colors">Modern UI/UX</div>
+                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono opacity-80 hover:text-primary transition-colors">Prompt Engineering</div>
+                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono opacity-80 hover:text-primary transition-colors">AI-First UI/UX</div>
                     </div>
                 </div>
                 <div class="hidden lg:block opacity-20 rotate-[-10deg]">
@@ -536,6 +537,6 @@
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
 <!-- App scripts -->
-<script src="{{ url_for('static', filename='js/main.js') }}?v=4.2.1"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}?v=4.2.2"></script>
 </body>
 </html>
