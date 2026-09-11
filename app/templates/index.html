@@ -90,7 +90,7 @@
     </script>
     
     <!-- Custom stylesheet override -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4.2.1">
 </head>
 <body class="bg-background text-on-surface font-display antialiased">
 <div class="flex min-h-screen">
@@ -232,40 +232,94 @@
                 </div>
             </div>
             
-            <div class="grid grid-cols-2 gap-10">
-                <!-- Left Panel: Input Form -->
-                <form id="code-form" action="/" method="POST" class="glass-panel rounded-2xl flex flex-col min-h-[500px]">
-                    <input type="hidden" name="mode" id="hidden-mode" value="generate">
-                    
-                    <div class="p-6 border-b border-white/5 flex justify-between items-center">
-                        <div class="flex items-center gap-3 opacity-60 text-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                            Task Specification (<span id="active-mode-label" class="capitalize">generate</span>)
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start" id="cockpit-grid">
+                <!-- Left Panel: Input Form + Creative Toolkit -->
+                <div class="flex flex-col gap-6" id="cockpit-left-panel">
+                    <form id="code-form" action="/" method="POST" class="glass-panel rounded-2xl flex flex-col">
+                        <input type="hidden" name="mode" id="hidden-mode" value="generate">
+                        
+                        <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                            <div class="flex items-center gap-3 opacity-80 text-sm font-medium">
+                                <svg class="w-4 h-4 text-primary transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                                Task Specification (<span id="active-mode-label" class="capitalize text-primary font-bold">generate</span>)
+                            </div>
+                            <div class="text-[10px] font-mono px-3 py-1 rounded-full bg-white/5 border border-white/5 opacity-60">UTF-8 // Llama-3</div>
                         </div>
-                        <div class="text-[10px] font-mono opacity-30">UTF-8 // Llama-3</div>
-                    </div>
-                    
-                    <div class="flex-1 p-8 font-code text-sm flex gap-4">
-                        <div class="line-numbers opacity-30 select-none text-right font-mono flex flex-col gap-0.5" aria-hidden="true" style="width: 28px; border-right: 1px solid rgba(255,179,153,0.1); padding-right: 8px;">
-                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div>
+                        
+                        <div class="p-6 font-code text-sm flex gap-4">
+                            <div class="line-numbers opacity-30 select-none text-right font-mono flex flex-col gap-0.5" aria-hidden="true" style="width: 28px; border-right: 1px solid rgba(255,179,153,0.15); padding-right: 8px;">
+                                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div>
+                            </div>
+                            <textarea name="prompt" class="w-full bg-transparent border-none focus:ring-0 text-white/90 placeholder-white/25 resize-none h-[190px] focus:outline-none leading-relaxed" id="editor-textarea" placeholder="Describe the code logic to generate..." required spellcheck="false" autocomplete="off"></textarea>
                         </div>
-                        <textarea name="prompt" class="w-full bg-transparent border-none focus:ring-0 text-white/90 placeholder-white/20 resize-none h-full focus:outline-none" id="editor-textarea" placeholder="Describe the code logic to generate..." required spellcheck="false" autocomplete="off"></textarea>
-                    </div>
+                        
+                        <div class="p-5 border-t border-white/5 flex justify-between items-center bg-black/20">
+                            <div class="flex items-center gap-3">
+                                <div class="text-xs opacity-50 font-mono" id="char-count">0 chars</div>
+                                <span class="opacity-20">|</span>
+                                <span class="text-[10px] font-mono opacity-40 hidden sm:inline">Ctrl + Enter to run</span>
+                            </div>
+                            <button type="submit" id="btn-submit" class="btn-shimmer px-8 py-3 bg-primary text-on-primary rounded-lg font-bold flex items-center gap-2 shadow-lg">
+                                <span class="spinner hidden" aria-hidden="true"></span>
+                                <span class="btn-text">Run Assistant</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            </button>
+                        </div>
+                    </form>
                     
-                    <div class="p-6 border-t border-white/5 flex justify-between items-center bg-black/20">
-                        <div class="text-xs opacity-40 font-mono" id="char-count">0 chars</div>
-                        <button type="submit" id="btn-submit" class="btn-shimmer px-8 py-3 bg-primary text-on-primary rounded-lg font-bold flex items-center gap-2">
-                            <span class="spinner hidden" aria-hidden="true"></span>
-                            <span class="btn-text">Run Assistant</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                        </button>
+                    <!-- Creative Studio Space: Mode Presets & Directives -->
+                    <div class="glass-panel rounded-2xl p-6 studio-toolkit flex flex-col gap-5" id="creative-toolkit">
+                        <div class="flex items-center justify-between pb-3 border-b border-white/5">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></div>
+                                <span class="label-caps text-[10px] font-bold text-primary">Smart Presets &amp; Recommendations</span>
+                            </div>
+                            <span class="text-[10px] opacity-50 font-mono uppercase tracking-wider" id="recommendations-category">Generate Mode</span>
+                        </div>
+                        
+                        <!-- Dynamic Recommendation Cards -->
+                        <div class="grid grid-cols-1 gap-2.5" id="recommendation-chips">
+                            <!-- Injected by JavaScript based on active mode -->
+                        </div>
+
+                        <!-- Prompt Directives & Modifiers -->
+                        <div class="pt-3 border-t border-white/5">
+                            <div class="flex items-center justify-between mb-2.5">
+                                <span class="text-[10px] opacity-40 label-caps">Quick Directives</span>
+                                <span class="text-[9px] opacity-30 font-mono">Click to append</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2" id="quick-modifiers">
+                                <button type="button" class="mod-chip text-[11px] px-3 py-1.5 rounded-lg bg-white/5 hover:bg-primary/20 hover:text-primary hover:border-primary/40 border border-white/10 transition-all font-mono" data-modifier=" Include comprehensive unit tests with edge case coverage.">+ Unit Tests</button>
+                                <button type="button" class="mod-chip text-[11px] px-3 py-1.5 rounded-lg bg-white/5 hover:bg-primary/20 hover:text-primary hover:border-primary/40 border border-white/10 transition-all font-mono" data-modifier=" Add strict TypeScript types and complete interfaces.">+ TypeScript</button>
+                                <button type="button" class="mod-chip text-[11px] px-3 py-1.5 rounded-lg bg-white/5 hover:bg-primary/20 hover:text-primary hover:border-primary/40 border border-white/10 transition-all font-mono" data-modifier=" Optimize strictly for low Big-O time and minimal memory consumption.">+ Optimize Big-O</button>
+                                <button type="button" class="mod-chip text-[11px] px-3 py-1.5 rounded-lg bg-white/5 hover:bg-primary/20 hover:text-primary hover:border-primary/40 border border-white/10 transition-all font-mono" data-modifier=" Provide clean docstrings and step-by-step explanatory comments.">+ Docstrings</button>
+                            </div>
+                        </div>
+
+                        <!-- Live Telemetry / Model Metrics HUD -->
+                        <div class="pt-3 border-t border-white/5 grid grid-cols-2 gap-3 text-[10px] font-mono">
+                            <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
+                                <div>
+                                    <span class="opacity-40 block text-[9px] mb-0.5">CORE MODEL</span>
+                                    <span class="text-white/90 font-bold">Llama-3-70B</span>
+                                </div>
+                                <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
+                                <div>
+                                    <span class="opacity-40 block text-[9px] mb-0.5">INFERENCE SPEED</span>
+                                    <span class="text-primary font-bold">Groq LPUs ~220ms</span>
+                                </div>
+                                <div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                            </div>
+                        </div>
                     </div>
-                </form>
+                </div>
                 
-                <!-- Right Panel: Output & Responses -->
-                <div class="glass-panel rounded-2xl flex flex-col bg-black/40">
-                    <div class="p-6 border-b border-white/5 flex justify-between items-center">
-                        <div class="flex items-center gap-3 text-primary text-sm">
+                <!-- Right Panel: Output & Responses (Stable, Non-Jumping Container) -->
+                <div class="glass-panel rounded-2xl flex flex-col bg-black/40 cockpit-output-panel sticky top-6 overflow-hidden" id="cockpit-output-wrapper">
+                    <div class="p-6 border-b border-white/5 flex justify-between items-center shrink-0">
+                        <div class="flex items-center gap-3 text-primary text-sm font-semibold">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                             Pulse Response
                         </div>
@@ -303,7 +357,7 @@
                                 <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 5v14l-8-8 8-8"></path><polyline points="12 5 20 12 12 19"></polyline></svg>
                             </div>
                             <h4 class="text-lg font-medium mb-2">Awaiting Input</h4>
-                            <p class="text-sm font-light max-w-xs" id="mode-hint">Compose your prompt to generate glowing peachy output.</p>
+                            <p class="text-sm font-light max-w-xs" id="mode-hint">Compose your prompt to generate glowing output.</p>
                         </div>
                         
                         <!-- Skeleton Loader -->
@@ -428,26 +482,27 @@
         
         <!-- SECTION 5: Lab Credits -->
         <section class="mb-32" id="section-credits">
-            <span class="label-caps mb-8 block text-center">Development Lead</span>
-            <div class="max-w-3xl mx-auto glass-panel rounded-3xl p-10 flex items-center gap-10">
-                <div class="w-32 h-32 rounded-2xl bg-gradient-to-br from-primary to-primary/40 flex items-center justify-center text-on-primary text-4xl font-black shrink-0 border border-white/10 shadow-2xl">
+            <span class="label-caps mb-8 block text-center">Founder &amp; Creator</span>
+            <div class="max-w-3xl mx-auto glass-panel rounded-3xl p-10 flex items-center gap-10 border border-primary/20">
+                <div class="w-32 h-32 rounded-2xl bg-gradient-to-br from-primary to-primary/40 flex items-center justify-center text-on-primary text-4xl font-black shrink-0 border border-white/10 shadow-2xl founder-avatar">
                     MD
                 </div>
                 <div class="flex-1">
                     <div class="flex items-center gap-4 mb-2">
                         <h4 class="text-3xl font-bold text-white">Mihir Das</h4>
-                        <div class="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold label-caps text-primary">STAFF</div>
+                        <div class="px-3 py-1 rounded-full bg-primary/20 border border-primary/40 text-[10px] font-extrabold label-caps text-primary shadow-[0_0_15px_var(--primary-glow)]">FOUNDER</div>
                     </div>
-                    <p class="text-primary/80 font-medium mb-4">Senior AI Frontend Architect &amp; Lead Systems Engineer</p>
-                    <p class="opacity-40 text-sm font-light mb-6 leading-relaxed">Pioneering high-fidelity developer interfaces and neural orchestration frameworks at the intersection of aesthetics and machine intelligence.</p>
-                    <div class="flex gap-4">
-                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-[10px] font-mono opacity-60">React/Next.js</div>
-                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-[10px] font-mono opacity-60">LLM Ops</div>
-                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-[10px] font-mono opacity-60">Three.js</div>
+                    <p class="text-primary font-medium mb-4 text-base">Founder &amp; Emerging AI Engineer</p>
+                    <p class="opacity-60 text-sm font-light mb-6 leading-relaxed">Passionate fresher engineer &amp; founder crafting next-generation developer tooling, neural code architectures, and high-fidelity intelligent interfaces at the intersection of aesthetics and machine intelligence.</p>
+                    <div class="flex flex-wrap gap-3">
+                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono opacity-80 hover:text-primary transition-colors">Python / Flask</div>
+                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono opacity-80 hover:text-primary transition-colors">Groq &amp; LLM Ops</div>
+                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono opacity-80 hover:text-primary transition-colors">Full-Stack AI</div>
+                        <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono opacity-80 hover:text-primary transition-colors">Modern UI/UX</div>
                     </div>
                 </div>
                 <div class="hidden lg:block opacity-20 rotate-[-10deg]">
-                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-24 h-24 text-primary" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M4 17.5a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm0-4a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm0-4a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm0-4a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Z"></path>
                     </svg>
                 </div>
@@ -481,6 +536,6 @@
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
 <!-- App scripts -->
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}?v=4.2.1"></script>
 </body>
 </html>

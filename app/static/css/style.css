@@ -1,13 +1,21 @@
 /* ============================================================
-   LUMINACODE — Premium Obsidian & Rose Gold AI Studio
+   LUMINACODE — Premium Obsidian & Dynamic Mode AI Studio
    ============================================================ */
 
-/* ── Custom Design Tokens & Variables ──────────────────────── */
+/* ── Custom Design Tokens & Multi-Mode Variables ───────────── */
 :root {
+    --primary: #ffb399;
+    --primary-glow: rgba(255, 179, 153, 0.28);
+    --primary-border: rgba(255, 179, 153, 0.24);
+    --primary-subtle: rgba(255, 179, 153, 0.08);
+    --primary-gradient: linear-gradient(135deg, #ffb399 0%, #f98463 100%);
+    --on-primary: #4e1e0d;
+    --accent-glow: rgba(255, 179, 153, 0.12);
+
     --rose-gold: #ffb399;
     --obsidian: #0a0a0c;
     --glass-bg: rgba(18, 18, 22, 0.85);
-    --glass-border: rgba(255, 179, 153, 0.12);
+    --glass-border: rgba(255, 179, 153, 0.14);
     
     --text-primary: #e5e1e4;
     --text-muted: #8e8e93;
@@ -18,6 +26,75 @@
     --radius-xl: 1.5rem;
 }
 
+/* ── Distinct Dynamic Modes (Generate, Explain, Debug) ───────── */
+body[data-mode="generate"] {
+    --primary: #ffb399;
+    --primary-glow: rgba(255, 179, 153, 0.3);
+    --primary-border: rgba(255, 179, 153, 0.35);
+    --primary-subtle: rgba(255, 179, 153, 0.1);
+    --primary-gradient: linear-gradient(135deg, #ffb399 0%, #f77f5c 100%);
+    --on-primary: #4a1c0d;
+    --glass-border: rgba(255, 179, 153, 0.16);
+    --accent-glow: rgba(255, 179, 153, 0.15);
+}
+
+body[data-mode="explain"] {
+    --primary: #38bdf8;
+    --primary-glow: rgba(56, 189, 248, 0.35);
+    --primary-border: rgba(56, 189, 248, 0.4);
+    --primary-subtle: rgba(56, 189, 248, 0.1);
+    --primary-gradient: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+    --on-primary: #082f49;
+    --glass-border: rgba(56, 189, 248, 0.18);
+    --accent-glow: rgba(56, 189, 248, 0.16);
+}
+
+body[data-mode="debug"] {
+    --primary: #f43f5e;
+    --primary-glow: rgba(244, 63, 94, 0.38);
+    --primary-border: rgba(244, 63, 94, 0.42);
+    --primary-subtle: rgba(244, 63, 94, 0.12);
+    --primary-gradient: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    --on-primary: #4c0519;
+    --glass-border: rgba(244, 63, 94, 0.2);
+    --accent-glow: rgba(244, 63, 94, 0.18);
+}
+
+/* ── Dynamic Color Overrides for Mode Switching ─────────────── */
+body {
+    transition: background-color 0.5s ease;
+}
+
+.text-primary {
+    color: var(--primary) !important;
+    transition: color 0.35s ease;
+}
+
+.bg-primary {
+    background: var(--primary-gradient) !important;
+    transition: background 0.35s ease, box-shadow 0.35s ease;
+}
+
+.text-on-primary {
+    color: var(--on-primary) !important;
+    transition: color 0.35s ease;
+}
+
+.border-primary,
+.border-primary\/20,
+.border-primary\/30,
+.border-primary\/40 {
+    border-color: var(--primary-border) !important;
+    transition: border-color 0.35s ease;
+}
+
+.bg-primary\/10,
+.bg-primary\/15,
+.bg-primary\/20 {
+    background-color: var(--primary-subtle) !important;
+    transition: background-color 0.35s ease;
+}
+
 /* ── Custom Component Overrides & Animations ───────────────── */
 .glass-panel {
     background: var(--glass-bg);
@@ -25,12 +102,12 @@
     -webkit-backdrop-filter: blur(20px) saturate(160%);
     border: 1px solid var(--glass-border);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-    transition: all 0.4s cubic-bezier(0.2, 0, 0.2, 1);
+    transition: border-color 0.35s ease, box-shadow 0.35s ease, background-color 0.35s ease;
 }
 
 .glass-panel:hover {
-    border-color: rgba(255, 179, 153, 0.25);
-    box-shadow: 0 12px 40px 0 rgba(255, 179, 153, 0.1);
+    border-color: var(--primary-border);
+    box-shadow: 0 12px 40px 0 var(--primary-glow);
 }
 
 .label-caps {
@@ -39,7 +116,8 @@
     text-transform: uppercase;
     font-weight: 600;
     font-size: 11px;
-    color: var(--rose-gold);
+    color: var(--primary);
+    transition: color 0.35s ease;
 }
 
 .btn-shimmer {
@@ -55,7 +133,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.15), transparent);
     transform: rotate(45deg);
     transition: 0.6s;
 }
@@ -76,11 +154,12 @@
 .logo-aura {
     position: absolute;
     inset: -6px;
-    background: conic-gradient(from 0deg, transparent, var(--rose-gold), transparent);
-    opacity: 0.2;
+    background: conic-gradient(from 0deg, transparent, var(--primary), transparent);
+    opacity: 0.25;
     border-radius: 50%;
     animation: rotate-glow 12s linear infinite;
     filter: blur(10px);
+    transition: background 0.35s ease;
 }
 
 @keyframes rotate-glow {
@@ -91,6 +170,7 @@
 .sidebar {
     width: 280px;
     border-right: 1px solid var(--glass-border);
+    transition: border-color 0.35s ease;
 }
 
 .main-workspace {
@@ -102,14 +182,31 @@ html {
     scroll-behavior: smooth;
 }
 
+.mode-pill {
+    background: var(--primary-subtle);
+    border-color: var(--primary-border);
+    box-shadow: 0 0 15px var(--primary-glow);
+    transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.mode-btn {
+    transition: color 0.25s ease, opacity 0.25s ease;
+}
+
 .mode-btn.active {
-    background-color: rgba(255, 179, 153, 0.15);
-    color: var(--rose-gold);
-    opacity: 1;
+    color: var(--primary) !important;
+    opacity: 1 !important;
+    font-weight: 700;
 }
 
 .quick-card {
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+.quick-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary-border);
+    box-shadow: 0 12px 30px var(--primary-glow);
 }
 
 /* ── History List in Sidebar ──────────────────────────────── */
@@ -421,10 +518,108 @@ code[class*="language-"], pre[class*="language-"] {
     transform: translateY(0) scale(1);
 }
 
-.toast-success-icon { 
-    color: var(--rose-gold); 
-    font-size: 1.15rem; 
-    text-shadow: 0 0 8px var(--rose-gold);
+/* ── Cockpit Layout & Stable Output Container ────────────── */
+#cockpit-grid {
+    align-items: flex-start;
+}
+
+.cockpit-output-panel {
+    height: 720px;
+    max-height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
+}
+
+#output-container {
+    flex: 1;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
+}
+
+/* ── Studio Recommendations & Intelligence Toolkit ───────── */
+.studio-toolkit {
+    background: rgba(14, 14, 18, 0.7);
+    border: 1px solid var(--glass-border);
+}
+
+.rec-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    text-align: left;
+    width: 100%;
+}
+
+.rec-card:hover {
+    background: var(--primary-subtle);
+    border-color: var(--primary-border);
+    transform: translateX(4px);
+    box-shadow: 0 4px 18px var(--primary-glow);
+}
+
+.rec-card .rec-icon {
+    font-size: 1.1rem;
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.rec-card .rec-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.rec-card .rec-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2px;
+}
+
+.rec-card .rec-tag {
+    font-size: 9px;
+    font-family: "JetBrains Mono", monospace;
+    color: var(--primary);
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.rec-card .rec-desc {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mod-chip {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.mod-chip:hover {
+    transform: translateY(-1px);
+}
+
+/* ── Founder Signature Polish ─────────────────────────────── */
+.founder-avatar {
+    box-shadow: 0 0 35px var(--primary-glow);
+    transition: all 0.4s ease;
+}
+.founder-avatar:hover {
+    transform: scale(1.03) rotate(1deg);
+    box-shadow: 0 0 45px var(--primary-glow);
 }
 
 /* ── Custom Utilities & Scrollbar ────────────────────────── */

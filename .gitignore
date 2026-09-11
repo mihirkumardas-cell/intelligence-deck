@@ -1,0 +1,27 @@
+# Virtual environment
+mihir/
+venv/
+env/
+ENV/
+.venv/
+
+# Secret credentials & keys
+.env
+.env.local
+
+# Python cache & compiled binaries
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+
+# Temporary logs
+*.log
+
+# IDE & system files
+.agents/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

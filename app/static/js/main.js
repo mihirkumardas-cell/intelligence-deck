@@ -36,15 +36,109 @@ document.addEventListener('DOMContentLoaded', () => {
     let serverConnected  = false;
 
     const placeholders = {
-        generate: 'Describe the logic or code structure you want to generate on the pulse engine...\n\nExample: "Write a high-performance Python parser for peachy neon JSON structures, with docstrings and type annotations."',
+        generate: 'Describe the logic or code structure you want to generate on the pulse engine...\n\nExample: "Write a high-performance Python parser for neon JSON structures, with docstrings and type annotations."',
         explain:  'Paste the code logic you would like the pulse engine to explain...\n\nExample:\ndef compute_pulse(rate, density):\n    return math.sqrt(rate * density) ** 1.85',
-        debug:    'Paste the broken code and its debugger crash logs to solve fast...\n\nExample:\nCode:\nresponse = fetch("https://api.peachpulse.ai/run")\nprint(response.json()["tokens"])\n\nError:\nTypeError: \'NoneType\' object is not subscriptable'
+        debug:    'Paste the broken code and its debugger crash logs to solve fast...\n\nExample:\nCode:\nresponse = fetch("https://api.example.com/run")\nprint(response.json()["tokens"])\n\nError:\nTypeError: \'NoneType\' object is not subscriptable'
     };
 
     const modeHints = {
-        generate: 'Compose your prompt to generate glowing peachy output.',
-        explain: 'Our neural core will deconstruct the logic for you.',
-        debug: 'Finding regressions and optimizing flow in real-time.'
+        generate: 'Compose your prompt to generate glowing architecture.',
+        explain: 'Our neural core will deconstruct the internal logic and Big-O bounds for you.',
+        debug: 'Diagnosing runtime regressions and repairing code in real-time.'
+    };
+
+    // ── Smart Presets & Recommendations Catalog ────────────────
+    const recommendations = {
+        generate: [
+            {
+                icon: '⚡',
+                title: 'Production REST API Endpoint',
+                tag: 'Flask / FastAPI',
+                desc: 'CRUD route with Pydantic validation, status codes, and JSON error handling.',
+                prompt: 'Create a production-grade REST API in Python (Flask/FastAPI) featuring structured JSON error handling, input validation with Pydantic, proper HTTP status codes, and clean docstrings.'
+            },
+            {
+                icon: '🚀',
+                title: 'Optimized Custom React Hook',
+                tag: 'TypeScript / React',
+                desc: 'Zero-dependency useDebounce & useThrottle with cleanup and TypeScript generics.',
+                prompt: 'Write a zero-dependency useDebounce and useThrottle React hook in TypeScript with generic types, cancel callbacks, and exhaustive dependency handling.'
+            },
+            {
+                icon: '🔒',
+                title: 'Secure JWT Auth Middleware',
+                tag: 'Security / Auth',
+                desc: 'Bearer token verification, refresh token rotation, and RBAC permission scopes.',
+                prompt: 'Implement secure JWT authentication middleware in Python with Bearer token decoding, refresh token rotation strategy, and role-based access control (RBAC).'
+            },
+            {
+                icon: '📦',
+                title: 'Async Data Ingestion Pipeline',
+                tag: 'Asyncio / Queue',
+                desc: 'High-throughput concurrent worker pool with retry backoff and rate limits.',
+                prompt: 'Build a high-performance concurrent worker queue in Python using asyncio.Queue, exponential backoff retries, and rate-limiting controls.'
+            }
+        ],
+        explain: [
+            {
+                icon: '🔍',
+                title: 'Big-O Complexity Deconstruction',
+                tag: 'Algorithmic Audit',
+                desc: 'Detailed mathematical breakdown of time & space bounds with bottleneck analysis.',
+                prompt: 'Perform a comprehensive Big-O algorithmic audit on this code. Break down worst-case, average-case, and space complexity, and pinpoint architectural bottlenecks.'
+            },
+            {
+                icon: '🌊',
+                title: 'Data Flow & Lifecycle Breakdown',
+                tag: 'Architecture',
+                desc: 'Step-by-step walkthrough of state transitions, memory lifecycle, and side-effects.',
+                prompt: 'Explain the internal lifecycle and step-by-step data flow of this logic. Clarify how variables mutate, how memory is allocated, and how side-effects behave.'
+            },
+            {
+                icon: '🛡️',
+                title: 'Security & Race Condition Review',
+                tag: 'Vulnerability Scan',
+                desc: 'Identifies SQLi/XSS risks, concurrency deadlocks, and unhandled edge scenarios.',
+                prompt: 'Audit this code for security vulnerabilities, concurrency race conditions, unhandled exceptions, and critical edge cases that could cause silent failures in production.'
+            },
+            {
+                icon: '💡',
+                title: 'Clean Architecture & SOLID Refactor',
+                tag: 'Design Patterns',
+                desc: 'Transform complex procedures into decoupled, testable, modular components.',
+                prompt: 'Explain how to refactor this code to strictly adhere to SOLID principles and Clean Architecture. Show before/after modular breakdown.'
+            }
+        ],
+        debug: [
+            {
+                icon: '🛠️',
+                title: 'Null / Undefined Pointer Exception',
+                tag: 'Runtime Crash',
+                desc: 'Fix "TypeError: NoneType object is not subscriptable" or undefined variable crashes.',
+                prompt: 'Here is a runtime crash error: TypeError: \'NoneType\' object is not subscriptable. Find the exact origin of null dereference, add defensive guards, and provide the fixed code.'
+            },
+            {
+                icon: '⚡',
+                title: 'Async Race Condition & Deadlock',
+                tag: 'Concurrency',
+                desc: 'Diagnose unresolved Promises, hanging asyncio tasks, or mutable state collisions.',
+                prompt: 'Debug this asynchronous concurrency problem: tasks are intermittently dropping requests or hanging. Identify race conditions, missing awaits, and shared state collisions.'
+            },
+            {
+                icon: '💾',
+                title: 'Memory Leak & Connection Drain',
+                tag: 'Resource Leak',
+                desc: 'Resolve unclosed database connections, lingering event listeners, and memory spikes.',
+                prompt: 'Diagnose and fix a memory leak / resource leak in this code where connections remain open and memory grows unboundedly under load.'
+            },
+            {
+                icon: '🔌',
+                title: 'CORS & Unhandled 500 Server Error',
+                tag: 'HTTP / Network',
+                desc: 'Resolve preflight CORS header rejections and unhandled internal server exceptions.',
+                prompt: 'Debug and resolve CORS policy preflight rejections and unhandled 500 internal server exceptions occurring between the frontend client and backend service.'
+            }
+        ]
     };
 
     // ── Boot ───────────────────────────────────────────────────
@@ -53,12 +147,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function init() {
         const defaultActiveBtn = document.querySelector('.mode-btn.active');
         if (defaultActiveBtn) {
-            currentMode = defaultActiveBtn.dataset.mode;
-            hiddenModeInput.value = currentMode;
-            updateModePill(defaultActiveBtn);
+            setMode(defaultActiveBtn.dataset.mode);
+        } else {
+            setMode('generate');
         }
 
-        textarea.placeholder = placeholders[currentMode];
         syncEditorChrome();
         loadHistoryFromStorage();
         renderHistoryList();
@@ -79,37 +172,93 @@ document.addEventListener('DOMContentLoaded', () => {
         setupTerminalSimulation();
     }
 
+    // ── Dynamic Mode Switching ─────────────────────────────────
+    function setMode(mode) {
+        currentMode = mode;
+        hiddenModeInput.value = currentMode;
+        document.body.dataset.mode = currentMode;
+
+        // Update mode toggle buttons
+        modeButtons.forEach(btn => {
+            const isMatch = btn.dataset.mode === mode;
+            btn.classList.toggle('active', isMatch);
+            btn.classList.toggle('opacity-50', !isMatch);
+            if (isMatch) {
+                updateModePill(btn);
+            }
+        });
+
+        textarea.placeholder = placeholders[mode];
+        if (activeModeLabel) {
+            activeModeLabel.textContent = mode;
+        }
+
+        const modeHint = document.getElementById('mode-hint');
+        if (modeHint && modeHints[mode]) {
+            modeHint.textContent = modeHints[mode];
+        }
+
+        const recCat = document.getElementById('recommendations-category');
+        if (recCat) {
+            recCat.textContent = `${mode} Mode`;
+        }
+
+        renderRecommendations();
+        syncEditorChrome();
+    }
+
+    // ── Render Recommendations Hub ─────────────────────────────
+    function renderRecommendations() {
+        const container = document.getElementById('recommendation-chips');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const list = recommendations[currentMode] || recommendations.generate;
+        list.forEach(rec => {
+            const card = document.createElement('div');
+            card.className = 'rec-card';
+            card.innerHTML = `
+                <div class="rec-icon">${rec.icon}</div>
+                <div class="rec-content">
+                    <div class="rec-title">
+                        <span>${escapeHtml(rec.title)}</span>
+                        <span class="rec-tag">${escapeHtml(rec.tag)}</span>
+                    </div>
+                    <div class="rec-desc">${escapeHtml(rec.desc)}</div>
+                </div>
+            `;
+            card.addEventListener('click', () => {
+                textarea.value = rec.prompt;
+                syncEditorChrome();
+                textarea.focus();
+                showToast(`✓ Preset Loaded: ${rec.title}`);
+            });
+            container.appendChild(card);
+        });
+    }
+
     // ── Event Listeners ────────────────────────────────────────
     function setupEventListeners() {
         // Mode selector
         modeButtons.forEach(btn => {
             btn.addEventListener('click', () => {
-                modeButtons.forEach(b => {
-                    b.classList.remove('active');
-                    b.classList.add('opacity-50');
-                });
-                btn.classList.add('active');
-                btn.classList.remove('opacity-50');
+                setMode(btn.dataset.mode);
+            });
+        });
 
-                currentMode = btn.dataset.mode;
-                hiddenModeInput.value = currentMode;
-                textarea.placeholder = placeholders[currentMode];
-
-                if (activeModeLabel) {
-                    activeModeLabel.textContent = currentMode;
+        // Quick Directives / Modifier Buttons
+        document.querySelectorAll('.mod-chip').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const mod = btn.dataset.modifier;
+                if (!mod) return;
+                if (textarea.value.trim().length > 0) {
+                    textarea.value = textarea.value.trim() + ' ' + mod.trim();
+                } else {
+                    textarea.value = mod.trim().replace(/^\+\s*/, '');
                 }
-                const modeHint = document.getElementById('mode-hint');
-                if (modeHint && modeHints[currentMode]) {
-                    modeHint.textContent = modeHints[currentMode];
-                }
-
-                updateModePill(btn);
                 syncEditorChrome();
-
-                const panel = document.querySelector('#code-form');
-                if (panel) {
-                    panel.className = `glass-panel rounded-2xl flex flex-col min-h-[500px] ${currentMode}-mode`;
-                }
+                textarea.focus();
+                showToast(`✓ Added directive: ${btn.textContent.trim()}`);
             });
         });
 
@@ -147,9 +296,8 @@ document.addEventListener('DOMContentLoaded', () => {
         quickCards.forEach(card => {
             card.addEventListener('click', () => {
                 const mode = card.dataset.quickMode;
-                const targetBtn = Array.from(modeButtons).find(b => b.dataset.mode === mode);
-                if (targetBtn) {
-                    targetBtn.click();
+                if (mode) {
+                    setMode(mode);
                     textarea.focus();
                     document.getElementById('section-cockpit').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
@@ -164,6 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Mode Pill ──────────────────────────────────────────────
     function updateModePill(btn) {
+        if (!modePill || !btn) return;
         modePill.style.left  = `${btn.offsetLeft}px`;
         modePill.style.width = `${btn.offsetWidth}px`;
     }
@@ -186,7 +335,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (!canHover || reduceMotion) return;
 
-        tiltSurfaces.forEach(surface => {
+        // CRITICAL FIX: Restrict tilt to non-reading interactive cards (.quick-card, .hero-visual-floating).
+        // NEVER tilt the editor form (#code-form) or the output panel (#output-container)
+        // because pointermove 3D rotateX/rotateY moves the text down and away from the user's cursor while hovering/reading!
+        const tiltElements = document.querySelectorAll('.quick-card, .hero-visual-floating');
+
+        tiltElements.forEach(surface => {
             surface.addEventListener('pointermove', e => {
                 const rect = surface.getBoundingClientRect();
                 const x = (e.clientX - rect.left) / rect.width  - 0.5;
@@ -366,8 +520,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 rawResponseText = responseDataEl.textContent.trim();
                 displayResponse(rawResponseText);
                 saveToHistory(promptText, currentMode, rawResponseText);
-                // Also scroll down to section cockpit output panel automatically
-                outputContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             } else {
                 throw new Error('Could not parse response from server template.');
             }
