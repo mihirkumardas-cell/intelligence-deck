@@ -1,3 +1,11 @@
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load .env from the project root (parent of this file) before anything else
+_env_path = Path(__file__).resolve().parent.parent / '.env'
+load_dotenv(dotenv_path=_env_path, override=True)
+
 from flask import Flask
 from app.routes.code_routes import code_bp
 
